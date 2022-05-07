@@ -1,28 +1,28 @@
-import React, { useState } from "react";
-import PropTypes from "prop-types";
-import { Form, Input, Button, Label } from "./ContactForm.styled";
+import React, { useState } from 'react';
+import PropTypes from 'prop-types';
+import { Form, Input, Button, Label } from './ContactForm.styled';
 
 export const ContactForm = ({ onSubmit }) => {
-  const [name, setName] = useState("");
-  const [number, setNumber] = useState("");
-  const handleInputChange = (evt) => {
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
+  const handleInputChange = evt => {
     const { name, value } = evt.currentTarget;
     switch (name) {
-      case "name":
+      case 'name':
         setName(value);
         break;
-      case "number":
+      case 'number':
         setNumber(value);
         break;
       default:
         break;
     }
   };
-  const handleSubmit = (evt) => {
+  const handleSubmit = evt => {
     evt.preventDefault();
     onSubmit(name, number);
-    setName("");
-    setNumber("");
+    setName('');
+    setNumber('');
   };
 
   return (
@@ -40,7 +40,7 @@ export const ContactForm = ({ onSubmit }) => {
         />
       </Label>
       <Label>
-        Number
+        Phone Number
         <Input
           type="tel"
           name="number"

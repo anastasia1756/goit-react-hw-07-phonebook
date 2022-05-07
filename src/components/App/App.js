@@ -1,49 +1,42 @@
-import React from "react";
-import { useSelector, useDispatch } from "react-redux";
-import { addContact, deleteContact, getContacts } from "redux/contactsSlice";
-import {
-  filterContact,
-  deleteSearchingContact,
-  getFilter,
-} from "redux/filterSlice";
-import { nanoid } from "nanoid";
-import toast, { Toaster } from "react-hot-toast";
-import { ContactList } from "../ContactList";
-import { Filter } from "../Filter";
-import { ContactForm } from "../ContactForm";
-import { Container, Title, Contacts } from "./App.styled";
+import React from 'react';
+import { useSelector } from 'react-redux';
+import { getFilter } from 'redux/filterSlice';
+import { useGetContactsQuery, useAddPostMutation } from 'redux/contactsApi';
+import { nanoid } from 'nanoid';
+import toast, { Toaster } from 'react-hot-toast';
+import { ContactList } from '../ContactList';
+import { Filter } from '../Filter';
+import { ContactForm } from '../ContactForm';
+import { InfinitySpin } from 'react-loader-spinner';
+import { Container, Title, Contacts } from './App.styled';
 
 export const App = () => {
-  const contacts = useSelector(getContacts);
-  const filter = useSelector(getFilter);
-  const dispatch = useDispatch();
+  const { data: contacts, error, isLoading } = useGetContactsQuery();
+  const [addContact, { isLoading: isDeleting }] = useAddPostMutation();
 
-  const filterInputChange = (evt) => {
-    dispatch(filterContact(evt.currentTarget.value));
-  };
-  const filterHandleDelete = () => {
-    dispatch(deleteSearchingContact(""));
-  };
+  const filter = useSelector(getFilter);
+
   const findContact = () => {
     const normilizedFilter = filter.toLowerCase();
 
-    return contacts.filter((contact) =>
+    return contacts?.filter(contact =>
       contact.name.toLowerCase().includes(normilizedFilter)
     );
   };
+
   const addingContact = (submitedName, submitedNumber) => {
     const notify = () =>
       toast.error(`${searchedName.name} is already in contacts`);
     const successAdded = () =>
-      toast.success("successfully added!", {
+      toast.success('successfully added!', {
         style: {
-          border: "1px solid #713200",
-          padding: "16px",
-          color: "#713200",
+          border: '1px solid #713200',
+          padding: '16px',
+          color: '#713200',
         },
         iconTheme: {
-          primary: "#713200",
-          secondary: "#FFFAEE",
+          primary: '#713200',
+          secondary: '#FFFAEE',
         },
       });
     const id = nanoid();
@@ -53,12 +46,9 @@ export const App = () => {
       ({ name }) => name.toLowerCase() === submitedName.toLowerCase()
     );
 
-    searchedName ? notify() : dispatch(addContact(newContact));
+    searchedName ? notify() : addContact(newContact);
 
     !searchedName && successAdded();
-  };
-  const deletingContact = (contactId) => {
-    dispatch(deleteContact(contactId));
   };
 
   const filteredContacts = findContact();
@@ -68,19 +58,17 @@ export const App = () => {
       <ContactForm onSubmit={addingContact} />
       <Toaster />
       <Contacts>Contacts</Contacts>
-      <Filter
-        filter={filter}
-        contacts={contacts}
-        onChange={filterInputChange}
-        onClick={filterHandleDelete}
-      />
-      {contacts.length > 0 ? (
-        <ContactList
-          contacts={filteredContacts}
-          onDeleteClick={deletingContact}
-        />
+      <Filter />
+      {isLoading ? (
+        <InfinitySpin color="black" />
       ) : (
-        <p>No contacts yet</p>
+        <>
+          {contacts?.length > 0 ? (
+            <ContactList contacts={filteredContacts} />
+          ) : (
+            <p>No contacts yet</p>
+          )}
+        </>
       )}
     </Container>
   );
