@@ -12,7 +12,7 @@ import { Container, Title, Contacts } from './App.styled';
 
 export const App = () => {
   const { data: contacts, error, isLoading } = useGetContactsQuery();
-  const [addContact, { isLoading: isDeleting }] = useAddPostMutation();
+  const [addContact] = useAddPostMutation();
 
   const filter = useSelector(getFilter);
 
@@ -42,7 +42,7 @@ export const App = () => {
     const id = nanoid();
     const newContact = { name: submitedName, id, number: submitedNumber };
 
-    const searchedName = contacts.find(
+    const searchedName = contacts?.find(
       ({ name }) => name.toLowerCase() === submitedName.toLowerCase()
     );
 
@@ -59,16 +59,12 @@ export const App = () => {
       <Toaster />
       <Contacts>Contacts</Contacts>
       <Filter />
-      {isLoading ? (
+      {error ? (
+        <p>No contacts yet</p>
+      ) : isLoading ? (
         <InfinitySpin color="black" />
       ) : (
-        <>
-          {contacts?.length > 0 ? (
-            <ContactList contacts={filteredContacts} />
-          ) : (
-            <p>No contacts yet</p>
-          )}
-        </>
+        <ContactList contacts={filteredContacts} />
       )}
     </Container>
   );

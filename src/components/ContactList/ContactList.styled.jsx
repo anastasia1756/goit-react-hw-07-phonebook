@@ -1,26 +1,26 @@
-import styled from "styled-components";
+import styled from 'styled-components';
 
 export const ContactsList = styled.ul`
   margin: 0;
-  padding: ${(props) => props.theme.spacing(5)};
+  padding: ${props => props.theme.spacing(5)};
 `;
 export const Button = styled.button`
   display: inline-block;
-  margin-left: ${(props) => props.theme.spacing(6)};
+  margin-left: ${props => props.theme.spacing(6)};
   width: 80px;
   height: 24px;
   background: repeating-linear-gradient(45deg, black, transparent 100px);
-  color: ${(props) => props.theme.colors.craftPapper};
+  color: ${props => props.theme.colors.craftPapper};
   cursor: pointer;
-  transition: ${(props) => props.theme.animation()};
+  transition: ${props => props.theme.animation()};
 
   :hover {
-    color: ${(props) => props.theme.colors.newspapper};
-    background-color: ${(props) => props.theme.colors.metalic};
+    color: ${props => props.theme.colors.newspapper};
+    background-color: ${props => props.theme.colors.metalic};
     box-shadow: 1px 1px 25px 10px rgba(34, 25, 9, 0.4);
   }
   :before {
-    content: "";
+    content: '';
     position: absolute;
     top: 0;
     left: -100%;
@@ -33,5 +33,10 @@ export const Button = styled.button`
       transparent
     );
     transition: all 650ms;
+  }
+  :disabled {
+    border: 1px solid #999999;
+    background-color: #cccccc;
+    color: #666666;
   }
 `;
